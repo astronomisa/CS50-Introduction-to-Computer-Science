@@ -1,0 +1,84 @@
+#include <cs50.h>
+#include <stdio.h>
+
+//Lab 1 problem specification: https://cs50.harvard.edu/x/2023/labs/1/
+//Program to check if a credit card number is valid using Luhn’s Algorithm
+int main(void)
+{
+    //Get user's card number
+    long number = get_long("Number: ");
+
+    //Creating control variables
+    int sum1, sum2, len, two;
+    sum1 = sum2 = len = two = 0;
+    int catcher = 0;
+    int skip = 1;
+    long d = number; //Saving original number
+
+    //Luhn’s Algorithm
+    while (number > 0)
+    {
+        int x2, first, second;
+
+        catcher = number % 10;
+        number = ((number - catcher) / 10);
+
+        if (skip % 2 == 0)
+        {
+            x2 = catcher * 2;
+            second = x2 % 10;
+            first = (x2 - second) / 10;
+            sum1 += first + second;
+        }
+
+        else
+        {
+            sum2 += catcher;
+        }
+
+        skip ++;
+        len ++;
+    }
+
+    //Pick first 2 digits
+    int l = len - 2;
+    int i = 0;
+
+    while (i < l)
+    {
+        d = ((d - d % 10) / 10);
+        i ++;
+        two = d;
+    }
+
+
+    //Check if it's valid
+    //INVALID
+    if ((sum1 + sum2) % 10 != 0 || len < 13 || len > 16)
+    {
+        printf("INVALID\n");
+    }
+
+    //AMEX
+    else if ((len == 15 && two == 34) || (len == 15 && two == 37))
+    {
+        printf("AMEX\n");
+    }
+
+    //VISA
+    else if ((len == 13 && catcher == 4) || (len == 16 && catcher == 4))
+    {
+        printf("VISA\n");
+    }
+
+    //MASTERCARD
+    else if (two == 34 || two == 37 || two == 51 || two == 52 || two == 53 || two == 54 || two == 55)
+    {
+        printf("MASTERCARD\n");
+    }
+
+    else
+    {
+        printf("INVALID\n");
+    }
+}
